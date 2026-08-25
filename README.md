@@ -1,12 +1,11 @@
 # dsh-stool-plugin
 
-DSH 运维工具箱插件。将 [stool](https://github.com/duormi/stool) 运维 CLI 的全部能力注册为 DSH 模型可调用的工具，无需手动操作即可让 Agent 自动执行服务器管理、日志搜索、数据库查询、CI/CD 部署等操作。
+DSH 运维工具箱插件。将 stool 运维 CLI 的全部能力注册为 DSH 模型可调用的工具，无需手动操作即可让 Agent 自动执行服务器管理、日志搜索、数据库查询、CI/CD 部署等操作。
 
 ## 安装
 
 ```bash
-dsh plugin --profile web add github:duormi/dsh-stool-plugin
-```
+dsh plugin --profile web add github:fufengyuan/dsh-stool-plugin
 
 然后重启 dsh web：
 
