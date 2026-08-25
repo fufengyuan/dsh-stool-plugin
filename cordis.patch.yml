@@ -1,0 +1,4 @@
+# dsh bundle patch: inserts stool plugin into the profile layer stack.
+- insert:
+    - id: dsh-stool
+      name: 'dsh-stool-plugin'
