@@ -1,7 +1,7 @@
 {
   "name": "dsh-stool-plugin",
-  "version": "1.0.0",
-  "description": "DSH 运维工具箱插件：集成 stool 全部能力（服务器管理/数据库/日志/CI-CD/Git/MFA/笔记/待办），9 个合并工具，附设置页面",
+  "version": "1.1.0",
+  "description": "DSH 运维工具箱插件：集成 stool 全部能力（服务器管理/数据库/日志/CI-CD/Git/MFA/笔记/待办），9 个合并工具，设置页自动检测本机 stool",
   "type": "module",
   "main": "lib/index.js",
   "exports": {
