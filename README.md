@@ -15,17 +15,31 @@ launchctl kickstart -k gui/501/com.duormi.dsh-web
 
 ## 提供的工具
 
-| 工具 | 操作 | 说明 |
-|------|------|------|
-| `stool_server` | list / exec / health / diagnose / read / ls / java-ps | 服务器管理 |
-| `stool_db` | list / query / redis | 数据库管理 |
-| `stool_log` | list / search / tail | 日志搜索与查看 |
-| `stool_cicd` | list / deploy / history | CI/CD 部署管理 |
-| `stool_mfa` | list / code | 双因子认证码 |
-| `stool_git` | status / log / branches / pull / push | Git 仓库操作 |
-| `stool_note` | list / add / search | 笔记管理 |
-| `stool_todo` | list / add / complete / stats | 待办任务 |
-| `stool_misc` | accounting / weekly / audit / project / nginx | 其他工具 |
+12 个工具覆盖 stool CLI v7.x 的全部命令面（`stool <模块> --help` 为准）：
+
+| 工具 | action | 说明 |
+|------|--------|------|
+| `stool_server` | list / test / exec / exec-batch / health / diagnose / read / ls / download / upload / mkdir / rm / java-ps / java-restart | 服务器管理。exec-batch 按行批量执行脚本；upload 需同时给 path(本地) 与 remotePath(远程目标)；java-restart 只停不拉起 |
+| `stool_db` | list / query / databases / tables / structure / data / redis | 数据库与 Redis。query 走 -d <dbId>，写操作在审批连接上被拦；redis 用 redisCommand 指定子命令（keys/get/set/type/ttl/h-*/l-*/s-* 共 13 个） |
+| `stool_log` | list / search / tail / context / add / delete | 日志查询。翻历史必须给 date 或 days（互斥）；context 按行号看上下文 |
+| `stool_cicd` | list / status / deploy / history / step-logs / rollback / cancel / modules / logs / tools | CI/CD。deploy 支持 stream/watch/branch；tools 检测构建工具与 SDK 版本 |
+| `stool_mfa` | list / code / codes / add / delete / parse-uri | 双因子认证码。codes 批量取全部验证码 |
+| `stool_git` | list / status / log / branches / pull / push / commit / checkout | Git 仓库操作 |
+| `stool_todo` | list / add / complete / uncomplete / delete / show / edit / search / stats / clear | 待办任务。截止日期是 due，标签是 tag（单数） |
+| `stool_note` | list / add / update / delete / groups / add-group / update-group / delete-group | 笔记管理。没有独立 search 子命令，用 list + keyword；分组用 groupId |
+| `stool_project` | list / add / show / update / delete / stats / todos | 项目管理 |
+| `stool_subtask` | list / add / complete / delete | 待办子任务 |
+| `stool_nginx` | list / add / update / delete / fetch / test / deploy / versions | Nginx 配置预设与部署 |
+| `stool_misc` | accounting / trend / weekly / weeklyShow / weeklySave / audit | 记账统计、周报、操作审计 |
+
+### 参数名与 CLI 的对应关系
+
+工具层做了参数归一（`serverId`/`command`/`script`…），落到 CLI 时按各子命令的真实 flag 拼装。几个容易踩的点：
+
+- `stool_todo`：add 用 `-d/--due` + `-t/--tag`；但 edit 里 `-t` 是 `--text`，标签必须用 `-g/--tag`。
+- `stool_log`：search/tail 的行数 flag 是 `-l`，没有 `--context` 这个参数（上下文要用 context 动作按行号查）。
+- `stool_db redis`：不接受 `--json`，且子命令必须白名单化（早期版本直接把整串命令按空格拆开传，会撞 clap 报 exit 2）。
+- `stool_server upload`：需要 `<ID> <LOCAL> <REMOTE>` 三个位置参数。
 
 ## 设置页
 
@@ -46,7 +60,7 @@ dsh-stool-plugin/
 ├── .gitignore
 ├── README.md
 ├── lib/
-│   ├── index.js          # Host 端：9 个工具注册 + stool 探测接口 /stool/status
+│   ├── index.js          # Host 端：12 个工具注册 + stool 探测接口 /stool/status
 │   └── client.js         # Client 端：设置页面卡片（自动检测 stool）
 └── node_modules/
     └── @deepseek-ai/
